@@ -15,7 +15,7 @@ delete_old_disk_caches()
 
 
 # Examples:
-**cache_to_disk##
+**cache_to_disk**
 ```python
 """
 This example caches the function "my_function" for 3 days.
