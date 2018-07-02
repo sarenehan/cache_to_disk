@@ -1,5 +1,5 @@
 # cache_to_disk
-Local disk caching decorator for python functions.
+Local disk caching decorator for python functions with auto-invalidation.
 
 This is intended to cache functions that both take a long time to run, and have return values that take up too much memory to cache in-memory with redis. The results of the function are pickled and saved to a file, and then unpickled and returned the next time the function is called. The caching is argument specific, so if the function is called with different arguments, the function will be run again. The caching decorator accepts an integer representing the number of days to cache the function for. After this many days, the file for that function will be deleted the next time this module is imported.
 
