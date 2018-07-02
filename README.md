@@ -35,19 +35,9 @@ def my_function():
 
 ```python
 """
-This example invalidates all of the caches for the function "my_function"
+This example invalidates all of the caches for the function "my_function". The function will be invalidated automatically, but this should be used when the function definition has been changed and you want it to re-run.
 """
 
 from cache_to_disk import delete_disk_caches_for_function
 delete_disk_caches_for_function('my_function')
-```
-
-**delete_old_disk_caches**
-```python
-"""
-This example invalidates all of the caches for the function "my_function"
-"""
-
-from cache_to_disk import delete_old_disk_caches
-delete_old_disk_caches()
 ```
