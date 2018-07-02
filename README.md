@@ -37,23 +37,6 @@ def my_function():
 """
 This example invalidates all of the caches for the function "my_function"
 """
-from cache_to_disk import cache_to_disk
-
-
-@cache_to_disk(3)
-def my_function():
-    to_return = []
-    for i in range(10000):
-        for j in range(i):
-            to_return.append(i * j)
-```
-
-**delete_disk_caches_for_function**
-
-```python
-"""
-This example invalidates all of the caches for the function "my_function"
-"""
 
 from cache_to_disk import delete_disk_caches_for_function
 delete_disk_caches_for_function('my_function')
