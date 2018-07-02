@@ -66,6 +66,7 @@ def delete_disk_caches_for_function(function_name):
         if function_name == cached_function:
             os.remove(disk_cache_dir + file)
             n_deleted += 1
+    print('Removed {} caches for {}'.format(n_deleted, function_name))
 
 
 def cache_to_disk(n_days_to_cache):
@@ -89,3 +90,4 @@ def cache_to_disk(n_days_to_cache):
 
 
 ensure_dir(disk_cache_dir)
+delete_old_disk_caches()
