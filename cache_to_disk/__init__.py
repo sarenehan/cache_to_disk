@@ -1,11 +1,9 @@
 # Standard Library
-from datetime import datetime
-from os.path import isfile, join, exists, getmtime
+import hashlib
 import os
 import pickle
-
-# Thirdparty
-import zlib
+from datetime import datetime
+from os.path import exists, getmtime, isfile, join
 
 max_bytes = 2**31 - 1
 disk_cache_dir = os.path.dirname(os.path.realpath(__file__)) + '/disk_cache/'
@@ -76,7 +74,7 @@ def cache_to_disk(n_days_to_cache):
         def new_func(*args, **kwargs):
             prefix_str = original_func.__name__ + '::' + str(args) + str(
                 kwargs)
-            prefix = zlib.adler32(prefix_str.encode())
+            prefix = hashlib.sha256(prefix_str.encode()).hexdigest()
             filename = '{}_{}_{}.pkl'.format(
                 prefix, original_func.__name__, n_days_to_cache)
             file_path = disk_cache_dir + filename
