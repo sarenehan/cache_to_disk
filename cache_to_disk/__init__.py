@@ -1,5 +1,5 @@
 # Standard Library
-import hashlib
+import zlib
 import os
 import pickle
 from datetime import datetime
@@ -74,7 +74,7 @@ def cache_to_disk(n_days_to_cache):
         def new_func(*args, **kwargs):
             prefix_str = original_func.__name__ + '::' + str(args) + str(
                 kwargs)
-            prefix = hashlib.sha256(prefix_str.encode()).hexdigest()
+            prefix = zlib.adler32(prefix_str.encode())
             filename = '{}_{}_{}.pkl'.format(
                 prefix, original_func.__name__, n_days_to_cache)
             file_path = disk_cache_dir + filename
