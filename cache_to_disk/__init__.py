@@ -1,5 +1,4 @@
 # Standard Library
-import zlib
 import os
 import pickle
 from datetime import datetime
@@ -74,9 +73,9 @@ def cache_to_disk(n_days_to_cache):
         def new_func(*args, **kwargs):
             prefix_str = original_func.__name__ + '::' + str(args) + str(
                 kwargs)
-            prefix = zlib.adler32(prefix_str.encode())
+            prefix_str = prefix_str.replace(' ', '_')
             filename = '{}_{}_{}.pkl'.format(
-                prefix, original_func.__name__, n_days_to_cache)
+                prefix_str, original_func.__name__, n_days_to_cache)
             file_path = disk_cache_dir + filename
             if exists(file_path):
                 return unpickle_big_data(file_path)
