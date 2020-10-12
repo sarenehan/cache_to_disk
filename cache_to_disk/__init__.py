@@ -49,7 +49,7 @@ def delete_old_disk_caches():
     n_deleted = 0
     deleted_caches = []
     for file in get_files_in_directory(disk_cache_dir):
-        max_age_days = int(file.split('_')[-1].replace('.pkl', ''))
+        max_age_days = int(file.split('****')[-1].replace('.pkl', ''))
         if get_age_of_file(disk_cache_dir + file) > max_age_days:
             os.remove(disk_cache_dir + file)
             deleted_caches.append(file)
@@ -59,7 +59,7 @@ def delete_old_disk_caches():
 def delete_disk_caches_for_function(function_name):
     n_deleted = 0
     for file in get_files_in_directory(disk_cache_dir):
-        cached_function = '_'.join(file.split('_')[1:-1])
+        cached_function = file.split('****')[-2]
         if function_name == cached_function:
             os.remove(disk_cache_dir + file)
             n_deleted += 1
@@ -74,7 +74,7 @@ def cache_to_disk(n_days_to_cache):
             prefix_str = original_func.__name__ + '::' + str(args) + str(
                 kwargs)
             prefix_str = prefix_str.replace(' ', '_')
-            filename = '{}_{}_{}.pkl'.format(
+            filename = '{}****{}****{}.pkl'.format(
                 prefix_str, original_func.__name__, n_days_to_cache)
             file_path = disk_cache_dir + filename
             if exists(file_path):
