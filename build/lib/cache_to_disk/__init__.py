@@ -1,5 +1,6 @@
 # Standard Library
 import os
+from copy import deepcopy
 import pickle
 import json
 from datetime import datetime
@@ -67,6 +68,7 @@ def get_files_in_directory(directory):
 
 def delete_old_disk_caches():
     cache_metadata = load_cache_metadata_json()
+    new_cache_metadata = deepcopy(cache_metadata)
     cache_changed = False
     for function_name, function_caches in cache_metadata.items():
         if function_name != 'total_number_of_cache_to_disks':
@@ -78,13 +80,14 @@ def delete_old_disk_caches():
                     if get_age_of_file(file_name) > max_age_days:
                         cache_changed = True
                         os.remove(file_name)
+                    else:
+                        to_keep.append(function_cache)
                 else:
-                    to_keep.append(function_cache)
+                    cache_changed = True
             if to_keep:
-                cache_metadata[function_name] = to_keep
-            else:
-                cache_metadata.pop(function_name)
-    write_cache_file(cache_metadata)
+                new_cache_metadata[function_name] = to_keep
+    if cache_changed:
+        write_cache_file(new_cache_metadata)
 
 
 def delete_disk_caches_for_function(function_name):
@@ -117,9 +120,11 @@ def cache_exists(cache_metadata, function_name, *args, **kwargs):
                 if get_age_of_file(file_name) > max_age_days:
                     os.remove(file_name)
                     cache_changed = True
+                else:
+                    function_value = unpickle_big_data(file_name)
+                    return True, function_value
             else:
-                function_value = unpickle_big_data(file_name)
-                return True, function_value
+                cache_changed = True
         else:
             new_caches_for_function.append(function_cache)
     if cache_changed:

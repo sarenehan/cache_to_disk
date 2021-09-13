@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="cache_to_disk",
-    version="1.0.1",
+    version="1.0.2",
     author="Stewart Renehan",
     author_email="sarenehan@gmail.com",
     description="Local disk caching decorator for python function.",
