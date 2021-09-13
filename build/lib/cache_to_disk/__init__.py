@@ -54,6 +54,10 @@ def get_age_of_file(filename, unit='days'):
     return getattr(age, unit)
 
 
+def file_exists(file_path):
+    return os.path.exists(file_path)
+
+
 def get_files_in_directory(directory):
     return [
         f for f in os.listdir(directory) if
@@ -63,13 +67,24 @@ def get_files_in_directory(directory):
 
 def delete_old_disk_caches():
     cache_metadata = load_cache_metadata_json()
+    cache_changed = False
     for function_name, function_caches in cache_metadata.items():
         if function_name != 'total_number_of_cache_to_disks':
+            to_keep = []
             for function_cache in function_caches:
                 max_age_days = int(function_cache['max_age_days'])
                 file_name = disk_cache_dir + function_cache['file_name']
-                if get_age_of_file(file_name) > max_age_days:
-                    os.remove(file_name)
+                if file_exists(file_name):
+                    if get_age_of_file(file_name) > max_age_days:
+                        cache_changed = True
+                        os.remove(file_name)
+                else:
+                    to_keep.append(function_cache)
+            if to_keep:
+                cache_metadata[function_name] = to_keep
+            else:
+                cache_metadata.pop(function_name)
+    write_cache_file(cache_metadata)
 
 
 def delete_disk_caches_for_function(function_name):
@@ -98,9 +113,10 @@ def cache_exists(cache_metadata, function_name, *args, **kwargs):
             file_name = disk_cache_dir + function_cache['file_name']
             max_age_days = int(function_cache['max_age_days'])
             file_name = disk_cache_dir + function_cache['file_name']
-            if get_age_of_file(file_name) > max_age_days:
-                os.remove(file_name)
-                cache_changed = True
+            if file_exists(file_name):
+                if get_age_of_file(file_name) > max_age_days:
+                    os.remove(file_name)
+                    cache_changed = True
             else:
                 function_value = unpickle_big_data(file_name)
                 return True, function_value

@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: cache-to-disk
-Version: 1.0.0
+Version: 1.0.1
 Summary: Local disk caching decorator for python function.
 Home-page: https://github.com/sarenehan/cache_to_disk
 Author: Stewart Renehan
