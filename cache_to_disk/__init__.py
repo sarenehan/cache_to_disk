@@ -73,8 +73,9 @@ _TOTAL_NUMCACHE_KEY = 'total_number_of_cache_to_disks'
 # the user function by raising NoCacheCondition
 _CacheInfo = namedtuple('CacheInfo', ['hits', 'misses', 'nocache'])
 
-logger.debug('cache_to_disk package loaded; using DISK_CACHE_DIR=%s',
-             os.path.relpath(DISK_CACHE_DIR, '.'))
+# This is probably unnecessary ...
+# logger.debug('cache_to_disk package loaded; using DISK_CACHE_DIR=%s',
+#             os.path.relpath(DISK_CACHE_DIR, '.'))
 
 
 class NoCacheCondition(Exception):
