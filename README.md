@@ -41,3 +41,65 @@ This example invalidates all of the caches for the function "my_function". The f
 from cache_to_disk import delete_disk_caches_for_function
 delete_disk_caches_for_function('my_function')
 ```
+
+**runtime_accounting**
+```python
+"""
+This example shows how to check the run-time cache accounting, which shows hits, misses and nocache events
+"""
+
+from cache_to_disk import cache_to_disk
+
+@cache_to_disk(3)
+def query_registrar(host, port, query):
+    socket = tcp_connect(host, port)
+    socket.send(query)
+    response = b''
+    while True:
+        buf = read_wrapper(socket)
+        if buf is None:
+            break
+        response += buf
+    return response    
+
+query_registrar('whois.verisign-grs.com', 43, b'test.com')
+query_registrar('whois.verisign-grs.com', 43, b'test.com')
+query_registrar('whois.verisign-grs.com', 43, b'test.com')
+query_registrar('whois.verisign-grs.com', 43, b'test.com')
+print(query_registrar.cache_info())
+```
+
+**nocache**
+```python
+"""
+This example shows how to inhibit caching depending on certain conditions, such as a network failure while also returning a value
+"""
+from cache_to_disk import cache_to_disk, NoCacheCondition
+from random import randint
+@cache_to_disk(3)
+def query_registrar(host, port, query):
+    socket = tcp_connect(host, port)
+    socket.send(query)
+    response = b''
+    while True:
+        try:
+            if randint(0, 5) > 3:
+                # Simulate a spurious failure like SIGPIPE/EPIPE
+                raise socket.error
+            buf = read_wrapper(socket)
+            
+            if buf is None:
+                break
+            response += buf
+        except socket.error:
+            # To the user, functionalliy requivalent to `return response` except
+            # the result is not cached, so it can be retried immediately or later
+            raise NoCacheCondition(function_value=response)
+    return response
+
+query_registrar('whois.verisign-grs.com', 43, b'test.com')
+query_registrar('whois.verisign-grs.com', 43, b'test.com')
+query_registrar('whois.verisign-grs.com', 43, b'test.com')
+query_registrar('whois.verisign-grs.com', 43, b'test.com')
+print(query_registrar.cache_info())
+```
